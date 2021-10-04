@@ -1,0 +1,42 @@
+version: "3.7"
+services:
+    redis:
+        build:
+            context: ./redis_server/
+            dockerfile: Dockerfile
+        image: nlu_redis_dummy
+        container_name: nluredisdummy
+        restart: always
+        volumes:
+                  - "./LocalStorage/redis:/app/LocalStorage"
+        expose:
+            - 6379
+        ports:
+          - "6379:6379"
+    master:
+        build:
+            context: ./master
+            dockerfile: Dockerfile
+        image: master_image
+        container_name: master_container
+        restart: always
+        volumes:
+          - "./LocalStorage/master:/app/LocalStorage"
+        depends_on:
+          - redis
+        ports:
+          - "10050:10050"
+
+    worker:
+        build:
+            context: ./worker
+            dockerfile: Dockerfile
+        image: worker_image
+        container_name: worker_container
+        restart: always
+        environment:
+            - task_name=test
+        volumes:
+            - "./LocalStorage/worker:/app/LocalStorage"
+        depends_on:
+            - redis

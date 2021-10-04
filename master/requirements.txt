@@ -1,0 +1,5 @@
+aredis
+asyncio==3.4.3
+tornado==6.0.3
+numpy==1.18.2
+tornado-swagger
